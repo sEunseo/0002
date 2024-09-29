@@ -228,6 +228,10 @@ class CurrentCallViewModel @UiThread constructor() : GenericViewModel() {
 
     val numpadModel: NumpadModel
 
+    val callConnectedEvent: MutableLiveData<Event<Boolean>> by lazy {
+        MutableLiveData<Event<Boolean>>()
+    }
+
     val appendDigitToSearchBarEvent: MutableLiveData<Event<String>> by lazy {
         MutableLiveData<Event<String>>()
     }

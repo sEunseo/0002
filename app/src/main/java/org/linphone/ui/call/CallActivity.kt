@@ -27,6 +27,10 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.os.PowerManager
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -43,6 +47,7 @@ import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.util.Locale
 import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -78,6 +83,9 @@ class CallActivity : GenericActivity() {
     private lateinit var callViewModel: CurrentCallViewModel
 
     private lateinit var proximityWakeLock: PowerManager.WakeLock
+
+    private lateinit var speechRecognizer: SpeechRecognizer
+    private lateinit var speechIntent: Intent
 
     private var bottomSheetDialog: BottomSheetDialogFragment? = null
 
@@ -129,6 +137,8 @@ class CallActivity : GenericActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.call_activity)
         binding.lifecycleOwner = this
+        binding.recognizedText.text = "음성 인식 결과가 여기에 표시됩니다."
+        initializeSpeechRecognizer()
         setUpToastsArea(binding.toastsArea)
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.otherCallsTopBar.root) { v, windowInsets ->
@@ -249,6 +259,12 @@ class CallActivity : GenericActivity() {
             enableProximitySensor(enabled)
         }
 
+        callViewModel.callConnectedEvent.observe(this) {
+            it.consume {
+                startSpeechToText()
+            }
+        }
+
         callsViewModel.showIncomingCallEvent.observe(this) {
             it.consume {
                 val action = IncomingCallFragmentDirections.actionGlobalIncomingCallFragment()
@@ -304,6 +320,7 @@ class CallActivity : GenericActivity() {
                 callViewModel.refreshMicrophoneState()
             }
         }
+        initializeSpeechRecognizer()
     }
 
     override fun onStart() {
@@ -346,6 +363,7 @@ class CallActivity : GenericActivity() {
             Log.i("$TAG Clearing native video window ID")
             core.nativeVideoWindowId = null
         }
+        speechRecognizer.destroy()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -404,6 +422,7 @@ class CallActivity : GenericActivity() {
                     OutgoingCallFragmentDirections.actionOutgoingCallFragmentToActiveConferenceCallFragment()
                 }
             }
+
             R.id.incomingCallFragment -> {
                 if (notInConference) {
                     Log.i("$TAG Going from incoming call fragment to call fragment")
@@ -415,6 +434,7 @@ class CallActivity : GenericActivity() {
                     IncomingCallFragmentDirections.actionIncomingCallFragmentToActiveConferenceCallFragment()
                 }
             }
+
             R.id.activeCallFragment -> {
                 if (notInConference) {
                     Log.i("$TAG Going from call fragment to call fragment")
@@ -424,6 +444,7 @@ class CallActivity : GenericActivity() {
                     ActiveCallFragmentDirections.actionActiveCallFragmentToActiveConferenceCallFragment()
                 }
             }
+
             R.id.activeConferenceCallFragment -> {
                 if (notInConference) {
                     Log.i("$TAG Going from conference call fragment to call fragment")
@@ -435,6 +456,7 @@ class CallActivity : GenericActivity() {
                     ActiveConferenceCallFragmentDirections.actionGlobalActiveConferenceCallFragment()
                 }
             }
+
             R.id.callsListFragment -> {
                 if (notInConference) {
                     Log.i("$TAG Going calls list fragment to active call fragment")
@@ -444,6 +466,7 @@ class CallActivity : GenericActivity() {
                     CallsListFragmentDirections.actionCallsListFragmentToActiveConferenceCallFragment()
                 }
             }
+
             else -> {
                 if (notInConference) {
                     Log.i("$TAG Going from call fragment to call fragment")
@@ -493,5 +516,71 @@ class CallActivity : GenericActivity() {
             )
             proximityWakeLock.release(PowerManager.RELEASE_FLAG_WAIT_FOR_NO_PROXIMITY)
         }
+    }
+
+    private fun initializeSpeechRecognizer() {
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
+
+        speechRecognizer.setRecognitionListener(object : RecognitionListener {
+            override fun onReadyForSpeech(params: Bundle?) {
+                Toast.makeText(this@CallActivity, "음성 인식 준비 완료", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onBeginningOfSpeech() {
+            }
+
+            override fun onRmsChanged(rmsdB: Float) {
+            }
+
+            override fun onBufferReceived(buffer: ByteArray?) {
+            }
+
+            override fun onEndOfSpeech() {
+            }
+
+            override fun onError(error: Int) {
+                Toast.makeText(this@CallActivity, "음성 인식 에러: $error", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResults(results: Bundle?) {
+                val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                matches?.let {
+                    val recognizedText = it.joinToString(separator = " ")
+                    binding.recognizedText.text = recognizedText
+                    Log.i(TAG, "Recognized Text: $recognizedText")
+                }
+            }
+
+            override fun onPartialResults(partialResults: Bundle?) {
+                val matches = partialResults?.getStringArrayList(
+                    SpeechRecognizer.RESULTS_RECOGNITION
+                )
+                matches?.let {
+                    val partialText = it.joinToString(separator = " ")
+                    binding.recognizedText.text = partialText
+
+                    Log.i(TAG, "Partial Recognized Text: $partialText")
+                }
+            }
+
+            override fun onEvent(eventType: Int, params: Bundle?) {
+            }
+        })
+
+        speechIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        }
+    }
+
+    private fun startSpeechToText() {
+        speechRecognizer.startListening(speechIntent)
+    }
+
+    private fun stopSpeechToText() {
+        speechRecognizer.stopListening()
     }
 }
