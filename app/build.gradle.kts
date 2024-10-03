@@ -219,6 +219,9 @@ dependencies {
     implementation(libs.androidx.emoji2)
     implementation(libs.androidx.car)
 
+    implementation("com.squareup.retrofit2:converter-gson:2.6.2")
+    implementation("com.squareup.retrofit2:retrofit:2.6.2")
+
     // https://github.com/google/flexbox-layout/blob/main/LICENSE Apache v2.0
     implementation(libs.google.flexbox)
     // https://github.com/material-components/material-components-android/blob/master/LICENSE Apache v2.0

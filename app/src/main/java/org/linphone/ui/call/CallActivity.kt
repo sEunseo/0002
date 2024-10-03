@@ -47,8 +47,10 @@ import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.gson.annotations.SerializedName
 import java.util.Locale
 import kotlin.math.max
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.linphone.LinphoneApplication.Companion.coreContext
@@ -69,6 +71,58 @@ import org.linphone.ui.call.model.AudioDeviceModel
 import org.linphone.ui.call.viewmodel.CallsViewModel
 import org.linphone.ui.call.viewmodel.CurrentCallViewModel
 import org.linphone.ui.call.viewmodel.SharedCallViewModel
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Header
+
+// 1. Response 데이터 클래스
+data class VertexResponse(
+    @SerializedName("example_field") val exampleField: String // 실제 응답 필드에 맞게 수정하세요
+)
+
+// 2. Retrofit 인터페이스
+interface VertexApiService {
+    @GET(
+        "projects/d-ai-ler-437505/locations/asia-northeast3/models/publishers/google/models/gemini-1.5-pro-002"
+    ) // 실제 endpoint에 맞게 수정하세요
+    suspend fun getVertexModelInfo(
+        @Header("Authorization") authToken: String // Bearer 토큰을 헤더에 추가
+    ): Response<VertexResponse>
+}
+
+// 3. Retrofit 인스턴스 생성
+val retrofit = Retrofit.Builder()
+    .baseUrl("https://vertex-ai.googleapis.com/v1/") // Vertex AI의 기본 URL
+    .addConverterFactory(GsonConverterFactory.create()) // JSON 변환을 위한 Converter
+    .build()
+
+val vertexApiService = retrofit.create(VertexApiService::class.java)
+
+// 4. API 호출 예제
+fun checkVertexApiConnection(accessToken: String) {
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            // Access Token을 Bearer 토큰으로 설정
+            val authToken = "Bearer $accessToken"
+
+            // API 호출
+            val response = vertexApiService.getVertexModelInfo(authToken)
+            if (response.isSuccessful) {
+                // 성공 시 데이터 출력
+                val data = response.body()
+                println("API 연결 성공! 응답 데이터: $data")
+            } else {
+                // 실패 시 오류 내용 출력
+                println("API 연결 실패! 오류 내용: ${response.errorBody()?.string()}")
+            }
+        } catch (e: Exception) {
+            // 예외 처리
+            e.printStackTrace()
+        }
+    }
+}
 
 @UiThread
 class CallActivity : GenericActivity() {
@@ -548,6 +602,8 @@ class CallActivity : GenericActivity() {
                     val recognizedText = it.joinToString(separator = " ")
                     binding.recognizedText.text = recognizedText
                     Log.i(TAG, "Recognized Text: $recognizedText")
+
+                    callViewModel.updateRecognizedText(recognizedText)
                 }
             }
 

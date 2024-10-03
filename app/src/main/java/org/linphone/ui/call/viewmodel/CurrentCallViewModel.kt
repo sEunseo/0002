@@ -156,6 +156,12 @@ class CurrentCallViewModel @UiThread constructor() : GenericViewModel() {
 
     val proximitySensorEnabled = MutableLiveData<Boolean>()
 
+    val recognizedText: MutableLiveData<String> = MutableLiveData()
+
+    fun updateRecognizedText(text: String) {
+        recognizedText.value = text
+    }
+
     // To synchronize chronometers in UI
     val callDuration = MutableLiveData<Int>()
 
