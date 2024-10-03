@@ -223,6 +223,7 @@ dependencies {
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.google.firebase.messaging)
     implementation(libs.google.firebase.crashlytics)
+    implementation("com.google.firebase:firebase-vertexai:16.0.0-beta06")
 
     // https://github.com/coil-kt/coil/blob/main/LICENSE.txt Apache v2.0
     implementation(libs.coil)

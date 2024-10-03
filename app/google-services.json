@@ -1,14 +1,14 @@
 {
   "project_info": {
-    "project_number": "929724111839",
+    "project_number": "454446861878",
     "firebase_url": "https://linphone-android-8a563.firebaseio.com",
-    "project_id": "linphone-android-8a563",
-    "storage_bucket": "linphone-android-8a563.appspot.com"
+    "project_id": "d-ai-ler",
+    "storage_bucket": "d-ai-ler.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:929724111839:android:4662ea9a056188c4",
+        "mobilesdk_app_id": "1:454446861878:android:099815d4c9266d91725297",
         "android_client_info": {
           "package_name": "org.linphone"
         }
@@ -29,7 +29,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCKrwWhkbA7Iy3wpEI8_ZvKOMp5jf6vV6A"
+          "current_key": "AIzaSyBjVOXBeEUX92EtpuDyzB0hivwkA15MLCY"
         }
       ]
     },
