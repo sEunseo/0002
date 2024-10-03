@@ -33,6 +33,12 @@ import coil.imageLoader
 import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import com.google.android.material.color.DynamicColors
+import com.google.firebase.Firebase
+import com.google.firebase.vertexai.vertexAI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.linphone.compatibility.Compatibility
 import org.linphone.core.CoreContext
 import org.linphone.core.CorePreferences
@@ -88,6 +94,15 @@ class LinphoneApplication : Application(), ImageLoaderFactory {
         coreContext.start()
 
         DynamicColors.applyToActivitiesIfAvailable(this)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val generativeModel = Firebase.vertexAI.generativeModel("gemini-1.5-flash")
+            val prompt = "Write a story about a magic backpack."
+            val response = generativeModel.generateContent(prompt)
+            withContext(Dispatchers.Main) {
+                print(response.text)
+            }
+        }
     }
 
     override fun onTrimMemory(level: Int) {
