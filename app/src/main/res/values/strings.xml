@@ -627,8 +627,8 @@
     <string name="call_state_connected">Active</string>
     <string name="call_state_paused">Paused</string>
     <string name="call_state_paused_by_remote">Paused by remote</string>
-    <string name="call_state_resuming">Resuming…</string>
-    <string name="call_state_ended">Ended</string>
+    <string name="call_state_resuming">연결 중...</string>
+    <string name="call_state_ended">종료</string>
     <string name="call_waiting_for_encryption_info">Waiting for encryption…</string>
     <string name="call_zrtp_end_to_end_encrypted">End-to-end encrypted by ZRTP</string>
     <string name="call_do_zrtp_sas_validation_again">Validate ZRTP SAS again</string>
@@ -727,28 +727,28 @@
     <string name="car_favorites_contacts_list_empty">No favorite contact yet</string>
 
     <!-- Various menu entries -->
-    <string name="menu_add_address_to_contacts">Add to contacts</string>
+    <string name="menu_add_address_to_contacts">연락처 추가</string>
     <string name="menu_see_existing_contact">See contact</string>
     <string name="menu_copy_sip_address">Copy SIP address</string>
-    <string name="menu_copy_phone_number">Copy phone number</string>
-    <string name="menu_delete_history">Delete history</string>
-    <string name="menu_delete_selected_item">Delete</string>
-    <string name="menu_invite">Invite</string>
-    <string name="menu_resend_chat_message">Re-send</string>
-    <string name="menu_reply_to_chat_message">Reply</string>
+    <string name="menu_copy_phone_number">전화번호 복사</string>
+    <string name="menu_delete_history">기록 삭제</string>
+    <string name="menu_delete_selected_item">삭제</string>
+    <string name="menu_invite">초대</string>
+    <string name="menu_resend_chat_message">재전송</string>
+    <string name="menu_reply_to_chat_message">답장</string>
     <string name="menu_forward_chat_message">Forward</string>
-    <string name="menu_copy_chat_message">Copy</string>
+    <string name="menu_copy_chat_message">복사</string>
     <string name="menu_export_selected_item">Download</string>
     <string name="menu_share_selected_item">Share</string>
 
     <!-- Colors -->
-    <string name="orange">Orange</string>
-    <string name="yellow">Yellow</string>
-    <string name="green">Green</string>
-    <string name="blue">Blue</string>
-    <string name="red">Red</string>
-    <string name="pink">Pink</string>
-    <string name="purple">Purple</string>
+    <string name="orange">오렌지</string>
+    <string name="yellow">노랑</string>
+    <string name="green">초록</string>
+    <string name="blue">파랑</string>
+    <string name="red">빨강</string>
+    <string name="pink">핑크</string>
+    <string name="purple">보라</string>
 
     <!-- Misc -->
     <string name="list_filter_no_result_found">No result found…</string>
@@ -761,7 +761,7 @@
     <string name="network_not_reachable">You aren\'t connected to internet</string>
     <string name="operation_in_progress_overlay">Operation in progress, please wait</string>
     <string name="generic_address_picker_conversations_list_title">Conversations</string>
-    <string name="generic_address_picker_contacts_list_title">Contacts</string>
+    <string name="generic_address_picker_contacts_list_title">연락처</string>
     <string name="generic_address_picker_suggestions_list_title">Suggestions</string>
     <string name="post_notifications_permission_not_granted">Post notifications permission not granted!</string>
 
@@ -783,7 +783,7 @@
     <string name="content_description_go_back_icon">Go back</string>
     <string name="content_description_dismiss_notification">Dismiss notification</string>
     <string name="content_description_save_changes">Save changes</string>
-    <string name="content_description_show_popup_menu">Show menu</string>
+    <string name="content_description_show_popup_menu">S메뉴 보기</string>
     <string name="content_description_confirm_new_participants_list">Confirm new participants list</string>
     <string name="content_description_click_for_more_info">Click to have more information</string>
     <string name="content_description_click_to_remove_participant">Click to remove participant</string>
@@ -860,7 +860,7 @@
     <string name="content_description_carddav_save">Save CardDAV configuration</string>
     <string name="content_description_ldap_delete">Delete this LDAP configuration</string>
     <string name="content_description_ldap_save">Save LDAP configuration</string>
-    <string name="content_description_play_call_recording">Plays the call recording</string>
+    <string name="content_description_play_call_recording">통화 녹음 시작</string>
 
     <!-- Copy of private hosts_allowlist_sample in androidx.car.app:app:1.7.0-beta01, as they recommend it -->
     <string-array name="hosts_allowlist_sample_copy" translatable="false">

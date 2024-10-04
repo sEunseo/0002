@@ -68,6 +68,11 @@
     <color name="green_main_500">#25D366</color>
     <color name="green_main_700">#1C9C4B</color>
 
+
+    <color  name="babyblue_main_100">#A3BFFF</color>
+    <color  name="babyblue_main_100_alpha_50">#F0F9FF</color>
+
+
     <color name="blue_main_100">#D6F4FF</color>
     <color name="blue_main_100_alpha_50">#80D6F4FF</color>
     <color name="blue_main_300">#99E4FF</color>
