@@ -29,12 +29,10 @@ import org.linphone.core.tools.Log
 import org.linphone.utils.FileUtils
 import org.linphone.utils.LinphoneUtils
 import org.linphone.utils.TimestampUtils
-import org.linphone.utils.AIUtils
 
 class RecordingModel @WorkerThread constructor(
     val filePath: String,
     val fileName: String,
-    val fileTranscription: String,
     isLegacy: Boolean = false
 ) {
     companion object {
