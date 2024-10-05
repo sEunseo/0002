@@ -33,6 +33,7 @@ import org.linphone.utils.TimestampUtils
 class RecordingModel @WorkerThread constructor(
     val filePath: String,
     val fileName: String,
+    val fileTranscription: String,
     isLegacy: Boolean = false
 ) {
     companion object {
