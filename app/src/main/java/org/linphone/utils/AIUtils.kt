@@ -1,12 +1,17 @@
 package org.linphone.utils
 
 import androidx.annotation.AnyThread
+import com.google.cloud.speech.v1.RecognitionAudio
+import com.google.cloud.speech.v1.RecognitionConfig
+import com.google.cloud.speech.v1.RecognitionConfig.AudioEncoding
+import com.google.cloud.speech.v1.SpeechClient
 import com.google.firebase.Firebase
-import com.google.firebase.vertexai.type.content
 import com.google.firebase.vertexai.type.generationConfig
 import com.google.firebase.vertexai.vertexAI
-import java.io.File
-import org.linphone.core.tools.Log
+import java.nio.file.Files
+import java.nio.file.Paths
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AIUtils {
     companion object {
@@ -26,24 +31,35 @@ class AIUtils {
 
         @AnyThread
         suspend fun generateText(filePath: String): String {
-            return try {
-                // 오디오 파일을 바이트 배열로 읽기
-                val audioBytes = File(filePath).readBytes()
+            return withContext(Dispatchers.IO) {
+                var transcript = ""
 
-                // 프롬프트 설정: 오디오 데이터와 질문
-                val prompt = content {
-                    blob("audio/mpeg", audioBytes) // MIME 타입에 맞게 수정
-                    text("Please transcribe this audio.")
+                // Google Cloud Speech-to-Text 클라이언트 초기화
+                SpeechClient.create().use { speechClient ->
+
+                    // 오디오 파일 불러오기
+                    val audioBytes = Files.readAllBytes(Paths.get(filePath))
+                    val audio = RecognitionAudio.newBuilder()
+                        .setContent(com.google.protobuf.ByteString.copyFrom(audioBytes))
+                        .build()
+
+                    // 요청 구성 설정
+                    val config = RecognitionConfig.newBuilder()
+                        .setEncoding(AudioEncoding.LINEAR16) // 파일 인코딩 타입 설정
+                        .setLanguageCode("ko-KR") // 한국어로 인식
+                        .setSampleRateHertz(16000) // 샘플링 레이트
+                        .build()
+
+                    // 음성을 텍스트로 전사하는 요청 실행
+                    val response = speechClient.recognize(config, audio)
+
+                    // 응답 결과에서 텍스트 추출
+                    for (result in response.resultsList) {
+                        transcript += result.alternativesList[0].transcript
+                    }
                 }
 
-                // 전사문 생성
-                val response = generativeModel.generateContent(prompt)
-
-                // 결과 반환
-                response.text ?: "Transcription failed."
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to transcribe audio: ${e.message}")
-                "Error in transcription."
+                return@withContext transcript
             }
         }
     }
