@@ -130,6 +130,12 @@ android {
         }
     }
 
+    packaging {
+        resources {
+            excludes += listOf("META-INF/DEPENDENCIES", "META-INF/INDEX.LIST")
+        }
+    }
+
     buildTypes {
         getByName("debug") {
             if (useDifferentPackageNameForDebugBuild) {
@@ -219,6 +225,14 @@ dependencies {
     implementation(libs.google.material)
     // To be able to parse native crash tombstone and print them with SDK logs the next time the app will start
     implementation(libs.google.protobuf)
+
+    implementation("com.google.cloud:google-cloud-speech:4.43.0") {
+        exclude(group = "com.google.protobuf", module = "protobuf-javalite")
+    }
+
+    configurations.all {
+        exclude(group = "com.google.protobuf", module = "protobuf-javalite")
+    }
 
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.google.firebase.messaging)
