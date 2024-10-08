@@ -2,10 +2,13 @@ package org.linphone.ui.main.recordings.model
 
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
+import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.linphone.LinphoneApplication.Companion.coreContext
 import org.linphone.core.Factory
@@ -34,6 +37,8 @@ class RecordingModel @WorkerThread constructor(
 
     // Transcription 저장
     var transcription: String = ""
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     init {
         if (isLegacy) {
@@ -96,6 +101,10 @@ class RecordingModel @WorkerThread constructor(
         } else {
             duration = 0
             formattedDuration = "??:??"
+        }
+
+        coroutineScope.launch {
+            transcribeRecording()
         }
     }
 
